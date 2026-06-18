@@ -174,12 +174,12 @@ io.on('connection', (socket) => {
         if (allSunk) {
             game.status = 'over';
             
-            
+            setTimeout(() => {
                 socket.emit('gameOver', { winner: 'you' });
                 if (game.players[enemyId].socket) {
                     game.players[enemyId].socket.emit('gameOver', { winner: 'enemy' });
                 }
-            
+            }, 100);
             return;
         }
     });

@@ -166,5 +166,5 @@ socket.on('gameOver', ({ winner }) => {
 });
 
 socket.on('serverFull', (msg) => {
-    console.log(msg);
+    alert(msg);
 });
