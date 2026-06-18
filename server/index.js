@@ -156,14 +156,14 @@ io.on('connection', (socket) => {
         enemyBoard[row][col] = hit ? 2 : 3;
         if (!hit) game.toMove = enemyId;
 
-        socket.emit('updateBoards', {
+        socket.emit('boardsUpdate', {
             userBoard: flattenBoard(game.players[playerId].board),
             enemyBoard: flattenEnemyBoard(enemyBoard),
             yourTurn: game.toMove === playerId
         });
         
         if (game.players[enemyId].socket) {
-            game.players[enemyId].socket.emit('updateBoards', {
+            game.players[enemyId].socket.emit('boardsUpdate', {
                 userBoard: flattenBoard(enemyBoard),
                 enemyBoard: flattenEnemyBoard(game.players[playerId].board),
                 yourTurn: game.toMove === enemyId

@@ -130,9 +130,9 @@ if (createBtn) {
         updateRoomState();
         
         navigator.clipboard.writeText(window.location.href).catch(() => {});
-        
+        setTimeout(() => {
             alert(`Ваша кімната створена!\nВаш ID: ${currentRoomId}\nПосилання скопійовано в буфер обміну та ви його можете надіслати своєму другу!`);
-        
+        }, 50);
     });
 }
 
