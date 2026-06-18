@@ -29,7 +29,7 @@ function buildReport(data) {
             columns: [{ uniqueName: "col" }],
             measures: [{ uniqueName: "state", aggregation: "sum" }]
         },
-        options: { grid: { showGrandTotals: "off", showTotals: "off", showHeaders: false } },
+        options: { grid: { showGrandTotals: "off", showTotals: "off", showHeaders: false }, configuratorButton: false },
         tableSizes: { columns: colSizes, rows: rowSizes }
     };
 }
