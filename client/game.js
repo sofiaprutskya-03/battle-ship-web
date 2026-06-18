@@ -24,9 +24,14 @@ function buildReport(data) {
     };
 }
 
-socket.on('boardInit', ({ userBoard: uData, enemyBoard: eData }) => {
+socket.on('boardInit', ({ userBoard: uData, enemyBoard: eData, cellsLeft }) => {
     userBoard.setReport(buildReport(uData));
     enemyBoard.setReport(buildReport(eData));
+    
+    if (cellsLeft !== undefined) {
+        document.getElementById('cellsLeft').textContent = cellsLeft;
+        if (cellsLeft === 0) document.getElementById('startBtn').disabled = false;
+    }
     userBoard.on('cellclick', function(cell) {
         const row = cell.rowIndex - 2;
         const col = cell.columnIndex - 1;
@@ -41,8 +46,21 @@ socket.on('boardInit', ({ userBoard: uData, enemyBoard: eData }) => {
     });
 });
 
-socket.on('boardUpdate', ({ userBoard: uData }) => {
+socket.on('boardUpdate', ({ userBoard: uData, cellsLeft }) => {
     userBoard.setReport(buildReport(uData));
+    
+    document.getElementById('cellsLeft').textContent = cellsLeft;
+    
+    const startBtn = document.getElementById('startBtn');
+    if (cellsLeft === 0) {
+        startBtn.disabled = false;
+    } else {
+        startBtn.disabled = true;
+    }
+});
+
+socket.on('placementError', (message) => {
+    alert("Помилка: " + message);
 });
 
 socket.on('boardsUpdate', ({ userBoard: uData, enemyBoard: eData, yourTurn }) => {

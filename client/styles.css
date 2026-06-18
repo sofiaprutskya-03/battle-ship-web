@@ -19,23 +19,48 @@ h1 { text-align: center; }
 }
 
 #wdr-pivot-view #wdr-grid-view div.ship-cell {
-    background-color: #4a90d9 !important;
+    background-color: #2196F3 !important;
+    color: transparent !important;
 }
 
-#wdr-pivot-view #wdr-grid-view div.hit-cell {
-    background-color: #e74c3c !important;
+.hit-cell {
+    background-color: #f44336 !important;
     color: white !important;
-}
-
-.controls {
     text-align: center;
-    margin-top: 20px;
+    font-weight: bold;
 }
 
-#turnInfo {
-    font-size: 18px;
-    font-weight: bold;
-    margin: 10px;
+/* Нові стилі для розміщення */
+.game-container {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+.boards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    min-width: 250px;
+    border: 1px solid #ddd;
+}
+
+.scoreboard {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+#startBtn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 #startBtn {

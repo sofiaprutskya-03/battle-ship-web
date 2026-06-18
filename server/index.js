@@ -1,8 +1,11 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
+const path = require('path');
 
 const app = express();
+app.use(express.static(path.join(__dirname, '../client')));
+
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
@@ -10,8 +13,10 @@ const io = new Server(server, {
     }
 });
 
-server.listen(3000);
-console.log('Сервер запущено на порту 3000');
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Сервер запущено на порту ${PORT}`);
+});
 
 // let бо цей обʼєкт будемо змінювати
 let game = {
@@ -69,16 +74,42 @@ io.on('connection', (socket) => {
     const enemyId = playerId === 'p1' ? 'p2' : 'p1';
     console.log(`Підключився ${playerId}`);
 
+    const currentCells = game.players[playerId].board.flat().filter(c => c === 1).length;
     socket.emit('boardInit', {
         userBoard: flattenBoard(game.players[playerId].board),
-        enemyBoard: flattenEnemyBoard(game.players[enemyId].board)
+        enemyBoard: flattenEnemyBoard(game.players[enemyId].board),
+        cellsLeft: 20 - currentCells
     });
 
     socket.on('toggleCell', ({ row, col }) => {
         if (game.status !== 'waiting') return;
         const board = game.players[playerId].board;
+        
+        if (board[row][col] === 0) {
+            const totalCells = board.flat().filter(c => c === 1).length;
+            if (totalCells >= 20) {
+                socket.emit('placementError', 'Ви вже поставили максимальну кількість клітинок (20)!');
+                return;
+            }
+            
+            const hasDiagonalNeighbor = 
+                (row > 0 && col > 0 && board[row-1][col-1] === 1) ||
+                (row > 0 && col < 9 && board[row-1][col+1] === 1) ||
+                (row < 9 && col > 0 && board[row+1][col-1] === 1) ||
+                (row < 9 && col < 9 && board[row+1][col+1] === 1);
+                
+            if (hasDiagonalNeighbor) {
+                socket.emit('placementError', 'Кораблі не можуть торкатись по діагоналі!');
+                return;
+            }
+        }
+        
         board[row][col] = board[row][col] === 0 ? 1 : 0;
-        socket.emit('boardUpdate', { userBoard: flattenBoard(board) });
+        const currentCells = board.flat().filter(c => c === 1).length;
+        socket.emit('boardUpdate', { 
+            userBoard: flattenBoard(board),
+            cellsLeft: 20 - currentCells
+        });
     });
 
     socket.on('startGame', () => {

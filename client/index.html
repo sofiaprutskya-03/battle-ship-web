@@ -12,10 +12,24 @@
 </head>
 <body>
     <h1>Морський бій</h1>
-    <div id="userBoard"></div>
-    <div id="enemyBoard"></div>
+    
+    <div class="game-container">
+        <div class="boards">
+            <div id="userBoard"></div>
+            <div id="enemyBoard"></div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="scoreboard">
+                <h3>Інформація</h3>
+                <p>Залишилось поставити: <b id="cellsLeft">20</b> палуб</p>
+                <small>*Палуби не можуть торкатися по діагоналі</small>
+            </div>
 
-    <p id="turnInfo">Розставте кораблі і натисніть Старт</p>
-    <button id="startBtn">Старт</button>
+            <p id="turnInfo">Розставте кораблі і натисніть Старт</p>
+            <!-- Кнопка неактивна поки не поставимо 20 клітинок -->
+            <button id="startBtn" disabled>Старт</button>
+        </div>
+    </div>
 </body>
 </html>
