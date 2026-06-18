@@ -1,129 +1,52 @@
 * {
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     box-sizing: border-box;
-}
-
-body {
-    background-color: #f0f4f8;
-    margin: 0;
-    padding: 0;
 }
 
 h1 {
     text-align: center;
-    color: #1a237e;
-    font-size: 2rem;
-    padding-top: 20px;
-    margin-bottom: 10px;
 }
 
-/* ---- Головний контейнер: дошки зліва, сайдбар справа ---- */
 .game-container {
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
     gap: 30px;
     padding: 20px;
 }
 
-/* ---- Контейнер двох дошок поряд ---- */
 .boards {
     display: flex;
     flex-direction: row;
-    gap: 20px;
-    align-items: flex-start;
 }
 
-/* ---- Підписи над дошками ---- */
-.board-label {
-    text-align: center;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 5px;
-    font-size: 14px;
-}
-
-/* ---- Самі контейнери WebDataRocks ---- */
 #userBoard, #enemyBoard {
     width: 330px;
     height: 330px;
-    overflow: hidden;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    background: white;
+    margin: 10px;
 }
 
-/* ---- Кольори клітинок ---- */
-#wdr-pivot-view #wdr-grid-view div.ship-cell {
-    background-color: #1565c0 !important; /* синій — твій корабель */
-    color: transparent !important;
-}
-
-#wdr-pivot-view #wdr-grid-view div.hit-cell {
-    background-color: #c62828 !important; /* темно-червоний — влучання */
-    color: white !important;
-    text-align: center;
-    font-weight: bold;
-}
-
-/* Промах — блакитний */
-#wdr-pivot-view #wdr-grid-view div.miss-cell {
-    background-color: #b3e5fc !important;
-    color: #0277bd !important;
-    text-align: center;
-    font-weight: bold;
-}
-
-/* ---- Бічна панель інформації ---- */
 .sidebar {
-    background-color: white;
-    padding: 24px;
-    border-radius: 12px;
-    min-width: 220px;
-    max-width: 260px;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    text-align: center;
+    padding: 20px;
 }
 
 .scoreboard {
-    margin-bottom: 16px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #eee;
-}
-
-.scoreboard h3 {
-    margin: 0 0 10px;
-    color: #1a237e;
-}
-
-#turnInfo {
-    margin: 12px 0;
-    font-weight: bold;
-    color: #333;
-    min-height: 24px;
-}
-
-/* ---- Кнопка Старт ---- */
-#startBtn {
-    padding: 10px 30px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: #2ecc71;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    width: 100%;
-    margin-top: 8px;
-    transition: background 0.2s;
-}
-
-#startBtn:hover:not(:disabled) {
-    background-color: #27ae60;
+    margin-bottom: 10px;
 }
 
 #startBtn:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+}
+
+#wdr-pivot-view #wdr-grid-view div.ship-cell {
+    background-color: gray;
+}
+
+#wdr-pivot-view #wdr-grid-view div.hit-cell {
+    background-color: red;
+    color: white;
+}
+
+#wdr-pivot-view #wdr-grid-view div.miss-cell {
+    color: gray;
 }
