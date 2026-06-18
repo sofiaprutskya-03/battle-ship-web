@@ -19,28 +19,28 @@
         <div class="sidebar">
             <div class="scoreboard" style="margin-bottom: 20px;">
                 <h3 style="margin-top: 0;">Інформація</h3>
-                <p>Залишилось: <b id="cellsLeft">20</b></p>
-                <small>*Кораблі не торкаються по діагоналі</small>
+                <p>У вас залишилось: <b id="cellsLeft">20</b> кораблів</p>
+                <small>*Кораблі не повинні торкатись одне одного (відступ по 1 клітинці)</small>
             </div>
             
-            <p id="turnInfo" style="margin-bottom: 10px;">Розставте кораблі і натисніть Старт</p>
-            <button id="startBtn" disabled style="padding: 10px 20px; cursor: pointer; margin-right: 5px;">Старт</button>
-            <button id="restartBtn" style="padding: 10px 20px; cursor: pointer;">Перезапустити</button>
+            <p id="turnInfo" style="margin-bottom: 10px;">Розставте усі кораблі і натисніть "Старт"</p>
+            <button id="startBtn" disabled>Старт</button>
+            <button id="restartBtn">Перезапустити</button>
 
             <details style="margin-top: 20px; text-align: left; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
                 <summary style="cursor: pointer; font-weight: bold; outline: none;">Правила та кольори</summary>
                 <div style="font-size: 14px; margin-top: 10px; display: flex; justify-content: space-around; text-align: left;">
                     <div>
-                        <strong>Розставте 10 кораблів:</strong>
+                        <strong>Вам необхідно розставити 10 кораблів:</strong>
                         <ul style="margin-top: 5px; padding-left: 20px; margin-bottom: 10px;">
-                            <li>1 шт. — 4-палубний</li>
+                            <li>1 шт. - 4-палубний</li>
                             <li>2 шт. — 3-палубні</li>
                             <li>3 шт. — 2-палубні</li>
                             <li>4 шт. — 1-палубні</li>
                         </ul>
                     </div>
                     <div>
-                        <strong>Кольори:</strong>
+                        <strong>Доступні кольори:</strong>
                         <ul style="margin-top: 5px; padding-left: 0; list-style: none;">
                             <li><span style="display:inline-block; width:12px; height:12px; background:gray; margin-right:5px;"></span>Сірий — ваш корабель</li>
                             <li><span style="display:inline-block; width:12px; height:12px; background:red; margin-right:5px;"></span>Червоний — влучання</li>

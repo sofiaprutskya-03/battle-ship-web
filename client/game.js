@@ -12,7 +12,6 @@ function colorCell(cellStyle, cellData) {
 const userBoard = new WebDataRocks({ container: "#userBoard", toolbar: false, customizeCell: colorCell });
 const enemyBoard = new WebDataRocks({ container: "#enemyBoard", toolbar: false, customizeCell: colorCell });
 
-// Це змушує кожну клітинку бути рівно 30пк і WebDataRocks не розтягується
 const cellSize = 30;
 const colSizes = [];
 const rowSizes = [];
@@ -34,6 +33,19 @@ function buildReport(data) {
     };
 }
 
+userBoard.on('cellclick', function(cell) {
+    const row = cell.rowIndex - 2;
+    const col = cell.columnIndex - 1;
+    if (row < 0 || row > 9 || col < 0 || col > 9) return;
+    socket.emit('toggleCell', { row, col });
+});
+enemyBoard.on('cellclick', function(cell) {
+    const row = cell.rowIndex - 2;
+    const col = cell.columnIndex - 1;
+    if (row < 0 || row > 9 || col < 0 || col > 9) return;
+    socket.emit('shoot', { row, col });
+});
+
 socket.on('boardInit', ({ userBoard: uData, enemyBoard: eData, cellsLeft }) => {
     userBoard.setReport(buildReport(uData));
     enemyBoard.setReport(buildReport(eData));
@@ -42,18 +54,6 @@ socket.on('boardInit', ({ userBoard: uData, enemyBoard: eData, cellsLeft }) => {
         document.getElementById('cellsLeft').textContent = cellsLeft;
         if (cellsLeft === 0) document.getElementById('startBtn').disabled = false;
     }
-    userBoard.on('cellclick', function(cell) {
-        const row = cell.rowIndex - 2;
-        const col = cell.columnIndex - 1;
-        if (row < 0 || row > 9 || col < 0 || col > 9) return;
-        socket.emit('toggleCell', { row, col });
-    });
-    enemyBoard.on('cellclick', function(cell) {
-        const row = cell.rowIndex - 2;
-        const col = cell.columnIndex - 1;
-        if (row < 0 || row > 9 || col < 0 || col > 9) return;
-        socket.emit('shoot', { row, col });
-    });
 });
 
 socket.on('boardUpdate', ({ userBoard: uData, cellsLeft }) => {
@@ -102,7 +102,7 @@ socket.on('gameRestarted', () => {
 });
 
 socket.on('gameOver', ({ winner }) => {
-    alert(winner === 'you' ? '🎉 Ви перемогли!' : '😢 Ви програли!');
+    alert(winner === 'you' ? '🎉 Ви перемогли! Вітаю вас, так тримати)' : '😢 Ви програли! Але нічого страшного, ще все попереду)');
 });
 
 socket.on('serverFull', (msg) => {
