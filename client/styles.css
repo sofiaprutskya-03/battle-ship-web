@@ -20,7 +20,7 @@ h1 { text-align: center; }
 }
 
 #userBoard, #enemyBoard {
-    width: 570px !important;
+    width: 575px !important;
     height: 385px !important;
     overflow: hidden !important;
 }
