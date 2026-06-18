@@ -39,8 +39,7 @@ function createBoard() {
     return board;
 }
 
-// WebDataRocks не розуміє вкладені масиви — він розуміє тільки такий плоский список 
-// де кожен рядок і стовпець вказані явно. Тому нам потрібна ця функція.
+
 function flattenBoard(board) {
     const flat = [];
     for (let i = 0; i < 10; i++) {
@@ -62,7 +61,6 @@ function flattenEnemyBoard(board) {
     return flat;
 }
 
-// connection і disconnect - це вбудовані події Socket.io
 io.on('connection', (socket) => {
     let playerId = null;
     if (!game.players.p1.socket) playerId = 'p1';
