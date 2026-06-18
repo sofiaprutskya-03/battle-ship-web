@@ -67,7 +67,11 @@ io.on('connection', (socket) => {
     let playerId = null;
     if (!game.players.p1.socket) playerId = 'p1';
     else if (!game.players.p2.socket) playerId = 'p2';
-    else { socket.disconnect(); return; }
+    else { 
+        socket.emit('serverFull', 'На жаль, гра вже заповнена (2 гравці)!');
+        setTimeout(() => socket.disconnect(), 500); 
+        return; 
+    }
 
     game.players[playerId].socket = socket;
     game.players[playerId].board = createBoard();

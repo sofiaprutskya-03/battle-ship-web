@@ -104,3 +104,8 @@ socket.on('gameRestarted', () => {
 socket.on('gameOver', ({ winner }) => {
     alert(winner === 'you' ? '🎉 Ви перемогли!' : '😢 Ви програли!');
 });
+
+socket.on('serverFull', (msg) => {
+    alert(msg);
+    document.body.innerHTML = `<h2 style='text-align:center; margin-top:50px; color:red;'>${msg}</h2><p style='text-align:center;'>Зачекайте, поки хтось вийде з гри.</p>`;
+});
