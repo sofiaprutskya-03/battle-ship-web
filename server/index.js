@@ -18,15 +18,7 @@ server.listen(PORT, () => {
     console.log(`Сервер запущено на порту ${PORT}`);
 });
 
-// let бо цей обʼєкт будемо змінювати
-let game = {
-    players: {
-        p1: { socket: null, board: [], status: 'waiting' },
-        p2: { socket: null, board: [], status: 'waiting' }
-    },
-    toMove: 'p1',
-    status: 'waiting'
-};
+const rooms = {};
 
 function createBoard() {
     let board = [];
@@ -40,11 +32,12 @@ function createBoard() {
 }
 
 
+
 function flattenBoard(board) {
     const flat = [];
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
-            const state = board[i] ? board[i][j] : 0;        // захист від порожньої дошки
+            const state = board[i] ? board[i][j] : 0;
             flat.push({ row: String(i), col: String(j), state: state });
         }
     }
@@ -62,29 +55,52 @@ function flattenEnemyBoard(board) {
 }
 
 io.on('connection', (socket) => {
+    let currentRoom = null;
     let playerId = null;
-    if (!game.players.p1.socket) playerId = 'p1';
-    else if (!game.players.p2.socket) playerId = 'p2';
-    else { 
-        socket.emit('serverFull', 'На жаль, гра вже заповнена (2 гравці)!');
-        setTimeout(() => socket.disconnect(), 500); 
-        return; 
-    }
+    let enemyId = null;
 
-    game.players[playerId].socket = socket;
-    game.players[playerId].board = createBoard();
-    const enemyId = playerId === 'p1' ? 'p2' : 'p1';
-    console.log(`Підключився ${playerId}`);
+    socket.on('joinRoom', (roomId) => {
+        if (!rooms[roomId]) {
+            rooms[roomId] = {
+                players: {
+                    p1: { socket: null, board: [], status: 'waiting' },
+                    p2: { socket: null, board: [], status: 'waiting' }
+                },
+                toMove: 'p1',
+                status: 'waiting'
+            };
+        }
 
-    const currentCells = game.players[playerId].board.flat().filter(c => c === 1).length;
-    socket.emit('boardInit', {
-        userBoard: flattenBoard(game.players[playerId].board),
-        enemyBoard: flattenEnemyBoard(game.players[enemyId].board),
-        cellsLeft: 20 - currentCells
+        const game = rooms[roomId];
+
+        if (!game.players.p1.socket) playerId = 'p1';
+        else if (!game.players.p2.socket) playerId = 'p2';
+        else { 
+            socket.emit('serverFull', 'Кімната заповнена (вже є 2 гравці)!');
+            return; 
+        }
+
+        currentRoom = roomId;
+        enemyId = playerId === 'p1' ? 'p2' : 'p1';
+        game.players[playerId].socket = socket;
+        game.players[playerId].board = createBoard();
+        socket.join(roomId);
+
+        console.log(`Підключився ${playerId} до кімнати ${roomId}`);
+
+        const currentCells = game.players[playerId].board.flat().filter(c => c === 1).length;
+        socket.emit('boardInit', {
+            userBoard: flattenBoard(game.players[playerId].board),
+            enemyBoard: flattenEnemyBoard(game.players[enemyId].board || createBoard()),
+            cellsLeft: 20 - currentCells
+        });
     });
 
     socket.on('toggleCell', ({ row, col }) => {
+        if (!currentRoom || !rooms[currentRoom]) return;
+        const game = rooms[currentRoom];
         if (game.status !== 'waiting') return;
+        
         const board = game.players[playerId].board;
         
         if (board[row][col] === 0) {
@@ -93,6 +109,7 @@ io.on('connection', (socket) => {
                 socket.emit('placementError', 'Ви вже поставили максимальну кількість клітинок (20)!');
                 return;
             }
+            
             
             const hasDiagonalNeighbor = 
                 (row > 0 && col > 0 && board[row-1][col-1] === 1) ||
@@ -115,7 +132,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('startGame', () => {
+        if (!currentRoom || !rooms[currentRoom]) return;
+        const game = rooms[currentRoom];
         if (game.status !== 'waiting') return;
+        
         game.players[playerId].status = 'ready';
         if (game.players.p1.status === 'ready' && game.players.p2.status === 'ready') {
             game.status = 'playing';
@@ -125,42 +145,57 @@ io.on('connection', (socket) => {
     });
 
     socket.on('shoot', ({ row, col }) => {
+        if (!currentRoom || !rooms[currentRoom]) return;
+        const game = rooms[currentRoom];
         if (game.status !== 'playing' || game.toMove !== playerId) return;
+        
         const enemyBoard = game.players[enemyId].board;
         if (enemyBoard[row][col] === 2 || enemyBoard[row][col] === 3) return;
+        
         const hit = enemyBoard[row][col] === 1;
         enemyBoard[row][col] = hit ? 2 : 3;
         if (!hit) game.toMove = enemyId;
 
+        socket.emit('updateBoards', {
+            userBoard: flattenBoard(game.players[playerId].board),
+            enemyBoard: flattenEnemyBoard(enemyBoard),
+            yourTurn: game.toMove === playerId
+        });
+        
+        if (game.players[enemyId].socket) {
+            game.players[enemyId].socket.emit('updateBoards', {
+                userBoard: flattenBoard(enemyBoard),
+                enemyBoard: flattenEnemyBoard(game.players[playerId].board),
+                yourTurn: game.toMove === enemyId
+            });
+        }
+
         const allSunk = !enemyBoard.flat().includes(1);
         if (allSunk) {
             game.status = 'over';
-            socket.emit('gameOver', { winner: 'you' });
-            game.players[enemyId].socket.emit('gameOver', { winner: 'enemy' });
+            
+            
+                socket.emit('gameOver', { winner: 'you' });
+                if (game.players[enemyId].socket) {
+                    game.players[enemyId].socket.emit('gameOver', { winner: 'enemy' });
+                }
+            
             return;
         }
-
-        game.players.p1.socket.emit('boardsUpdate', {
-            userBoard: flattenBoard(game.players.p1.board),
-            enemyBoard: flattenEnemyBoard(game.players.p2.board),
-            yourTurn: game.toMove === 'p1'
-        });
-        game.players.p2.socket.emit('boardsUpdate', {
-            userBoard: flattenBoard(game.players.p2.board),
-            enemyBoard: flattenEnemyBoard(game.players.p1.board),
-            yourTurn: game.toMove === 'p2'
-        });
     });
 
-    socket.on('restartGame', () => {
+    socket.on('restart', () => {
+        if (!currentRoom || !rooms[currentRoom]) return;
+        const game = rooms[currentRoom];
+        
         game.players.p1.board = createBoard();
-        game.players.p2.board = createBoard();
         game.players.p1.status = 'waiting';
+        game.players.p2.board = createBoard();
         game.players.p2.status = 'waiting';
         game.status = 'waiting';
         game.toMove = 'p1';
-        
-        io.emit('gameRestarted');
+
+        io.to(currentRoom).emit('gameRestarted');
         
         if (game.players.p1.socket) {
             game.players.p1.socket.emit('boardInit', {
@@ -179,8 +214,19 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        game.players[playerId].socket = null;
-        game.players[playerId].status = 'waiting';
-        console.log(`${playerId} відключився`);
+        if (!currentRoom || !rooms[currentRoom]) return;
+        const game = rooms[currentRoom];
+        
+        if (game.players[playerId]) {
+            game.players[playerId].socket = null;
+        }
+        
+        
+        if (!game.players.p1.socket && !game.players.p2.socket) {
+            delete rooms[currentRoom];
+            console.log(`Кімнату ${currentRoom} видалено (всі вийшли)`);
+        } else if (game.players[enemyId] && game.players[enemyId].socket) {
+            game.players[enemyId].socket.emit('playerDisconnected');
+        }
     });
 });
