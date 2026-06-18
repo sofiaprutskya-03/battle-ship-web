@@ -9,8 +9,17 @@ function colorCell(cellStyle, cellData) {
     }
 }
 
-const userBoard = new WebDataRocks({ container: "#userBoard", toolbar: false });
-const enemyBoard = new WebDataRocks({ container: "#enemyBoard", toolbar: false });
+const userBoard = new WebDataRocks({ container: "#userBoard", toolbar: false, customizeCell: colorCell });
+const enemyBoard = new WebDataRocks({ container: "#enemyBoard", toolbar: false, customizeCell: colorCell });
+
+// Це змушує кожну клітинку бути рівно 30пк і WebDataRocks не розтягується
+const cellSize = 30;
+const colSizes = [];
+const rowSizes = [];
+for (let i = 0; i < 11; i++) {
+    colSizes.push({ idx: i, width: cellSize });
+    rowSizes.push({ idx: i, height: cellSize });
+}
 
 function buildReport(data) {
     return {
@@ -20,7 +29,8 @@ function buildReport(data) {
             columns: [{ uniqueName: "col" }],
             measures: [{ uniqueName: "state", aggregation: "sum" }]
         },
-        options: { grid: { showGrandTotals: "off", showTotals: "off" } }
+        options: { grid: { showGrandTotals: "off", showTotals: "off" } },
+        tableSizes: { columns: colSizes, rows: rowSizes }
     };
 }
 
