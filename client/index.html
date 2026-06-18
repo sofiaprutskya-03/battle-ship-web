@@ -17,15 +17,18 @@
             <div id="enemyBoard"></div>
         </div>
         <div class="sidebar">
-            <div class="scoreboard" style="margin-bottom: 20px;">
-                <h3 style="margin-top: 0;">Інформація</h3>
-                <p>У вас залишилось: <b id="cellsLeft">20</b> кораблів</p>
-                <small>*Кораблі не повинні торкатись одне одного (відступ по 1 клітинці)</small>
+            <h3 style="margin-top: 0; margin-bottom: 15px;">Інформація</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
+                <div style="flex: 1; text-align: left;">
+                    <p style="margin-top: 0;">У вас залишилось: <b id="cellsLeft">20</b> кораблів</p>
+                    <small>*Кораблі не повинні торкатись одне одного (відступ по 1 клітинці)</small>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    <p id="turnInfo" style="margin-bottom: 10px; margin-top: 0;">Розставте усі кораблі і натисніть "Старт"</p>
+                    <button id="startBtn" disabled>Старт</button>
+                    <button id="restartBtn">Перезапустити</button>
+                </div>
             </div>
-            
-            <p id="turnInfo" style="margin-bottom: 10px;">Розставте усі кораблі і натисніть "Старт"</p>
-            <button id="startBtn" disabled>Старт</button>
-            <button id="restartBtn">Перезапустити</button>
 
             <details style="margin-top: 20px; text-align: left; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
                 <summary style="cursor: pointer; font-weight: bold; outline: none;">Правила та кольори</summary>
@@ -34,17 +37,17 @@
                         <strong>Вам необхідно розставити 10 кораблів:</strong>
                         <ul style="margin-top: 5px; padding-left: 20px; margin-bottom: 10px;">
                             <li>1 шт. - 4-палубний</li>
-                            <li>2 шт. — 3-палубні</li>
-                            <li>3 шт. — 2-палубні</li>
-                            <li>4 шт. — 1-палубні</li>
+                            <li>2 шт. - 3-палубні</li>
+                            <li>3 шт. - 2-палубні</li>
+                            <li>4 шт. - 1-палубні</li>
                         </ul>
                     </div>
                     <div>
                         <strong>Доступні кольори:</strong>
                         <ul style="margin-top: 5px; padding-left: 0; list-style: none;">
-                            <li><span style="display:inline-block; width:12px; height:12px; background:gray; margin-right:5px;"></span>Сірий — ваш корабель</li>
-                            <li><span style="display:inline-block; width:12px; height:12px; background:red; margin-right:5px;"></span>Червоний — влучання</li>
-                            <li><span style="display:inline-block; width:12px; height:12px; background:lightgray; margin-right:5px;"></span>Світло-сірий — промах</li>
+                            <li><span style="display:inline-block; width:12px; height:12px; background:gray; margin-right:5px;"></span>Сірий - ваш корабель</li>
+                            <li><span style="display:inline-block; width:12px; height:12px; background:red; margin-right:5px;"></span>Червоний - влучання</li>
+                            <li><span style="display:inline-block; width:12px; height:12px; background:lightgray; margin-right:5px;"></span>Світло-сірий - промах</li>
                         </ul>
                     </div>
                 </div>
