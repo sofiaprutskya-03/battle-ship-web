@@ -82,6 +82,11 @@ socket.on('boardsUpdate', ({ userBoard: uData, enemyBoard: eData, yourTurn }) =>
 document.getElementById('startBtn').addEventListener('click', () => {
     socket.emit('startGame');
     document.getElementById('startBtn').style.display = 'none';
+    document.getElementById('turnInfo').textContent = "Очікування суперника...";
+});
+
+socket.on('gameStarted', ({ yourTurn }) => {
+    document.getElementById('turnInfo').textContent = yourTurn ? "Ваш хід" : "Хід суперника";
 });
 
 document.getElementById('restartBtn').addEventListener('click', () => {
