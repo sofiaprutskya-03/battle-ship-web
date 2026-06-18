@@ -9,9 +9,6 @@ function colorCell(cellStyle, cellData) {
     }
 }
 
-const userBoard = new WebDataRocks({ container: "#userBoard", toolbar: false, customizeCell: colorCell });
-const enemyBoard = new WebDataRocks({ container: "#enemyBoard", toolbar: false, customizeCell: colorCell });
-
 const cellSize = 30;
 const colSizes = [];
 const rowSizes = [];
@@ -33,13 +30,25 @@ function buildReport(data) {
     };
 }
 
+const emptyData = [];
+for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) {
+        emptyData.push({ row: String(i), col: String(j), state: 0 });
+    }
+}
+
+const userBoard = new WebDataRocks({ container: "#userBoard", toolbar: false, customizeCell: colorCell, report: buildReport(emptyData) });
+const enemyBoard = new WebDataRocks({ container: "#enemyBoard", toolbar: false, customizeCell: colorCell, report: buildReport(emptyData) });
+
 userBoard.on('cellclick', function(cell) {
+    if (!currentRoomId) return;
     const row = cell.rowIndex - 2;
     const col = cell.columnIndex - 1;
     if (row < 0 || row > 9 || col < 0 || col > 9) return;
     socket.emit('toggleCell', { row, col });
 });
 enemyBoard.on('cellclick', function(cell) {
+    if (!currentRoomId) return;
     const row = cell.rowIndex - 2;
     const col = cell.columnIndex - 1;
     if (row < 0 || row > 9 || col < 0 || col > 9) return;
@@ -90,8 +99,59 @@ socket.on('gameStarted', ({ yourTurn }) => {
 });
 
 document.getElementById('restartBtn').addEventListener('click', () => {
-    socket.emit('restartGame');
+    socket.emit('restart');
 });
+
+
+let currentRoomId = new URLSearchParams(window.location.search).get('room');
+
+function updateRoomState() {
+    const roomPanel = document.getElementById('roomPanel');
+    const uBoard = document.getElementById('userBoard');
+    const eBoard = document.getElementById('enemyBoard');
+    
+    if (currentRoomId) {
+        if (roomPanel) roomPanel.style.display = 'none';
+        if (uBoard) uBoard.classList.remove('blocked-board');
+        if (eBoard) eBoard.classList.remove('blocked-board');
+        socket.emit('joinRoom', currentRoomId);
+    } else {
+        if (roomPanel) roomPanel.style.display = 'flex';
+        if (uBoard) uBoard.classList.add('blocked-board');
+        if (eBoard) eBoard.classList.add('blocked-board');
+    }
+}
+
+const createBtn = document.getElementById('createRoomBtn');
+if (createBtn) {
+    createBtn.addEventListener('click', () => {         
+        currentRoomId = Math.random().toString(36).substring(2, 6).toUpperCase();
+        window.history.pushState(null, '', '?room=' + currentRoomId);
+        updateRoomState();
+        
+        navigator.clipboard.writeText(window.location.href).catch(() => {});
+        
+            alert(`Ваша кімната створена!\nВаш ID: ${currentRoomId}\nПосилання скопійовано в буфер обміну та ви його можете надіслати своєму другу!`);
+        
+    });
+}
+
+const joinBtn = document.getElementById('joinRoomBtn');
+if (joinBtn) {
+    joinBtn.addEventListener('click', () => {
+        const val = document.getElementById('joinRoomInput').value.trim().toUpperCase();
+        if (val) {
+            currentRoomId = val;
+            window.history.pushState(null, '', '?room=' + currentRoomId);
+            updateRoomState();
+        } else {
+            alert("Введіть ID кімнати!");
+        }
+    });
+}
+
+
+setTimeout(updateRoomState, 500);
 
 socket.on('gameRestarted', () => {
     document.getElementById('startBtn').style.display = 'inline-block';
