@@ -150,6 +150,19 @@ io.on('connection', (socket) => {
         });
     });
 
+    socket.on('restartGame', () => {
+        game.players[playerId].board = createBoard();
+        game.players[playerId].status = 'waiting';
+        game.status = 'waiting';
+        
+        socket.emit('boardInit', {
+            userBoard: flattenBoard(game.players[playerId].board),
+            enemyBoard: flattenEnemyBoard(game.players[enemyId].board),
+            cellsLeft: 20
+        });
+        socket.emit('gameRestarted');
+    });
+
     socket.on('disconnect', () => {
         game.players[playerId].socket = null;
         game.players[playerId].status = 'waiting';

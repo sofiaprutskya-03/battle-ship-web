@@ -4,8 +4,8 @@ function colorCell(cellStyle, cellData) {
     if (cellData.type === "value") {
         cellStyle.text = "";
         if (cellData.value === 1) cellStyle.addClass("ship-cell");
-        if (cellData.value === 2) { cellStyle.addClass("hit-cell"); cellStyle.text = "✘"; }
-        if (cellData.value === 3) cellStyle.text = "•";
+        if (cellData.value === 2) cellStyle.addClass("hit-cell");
+        if (cellData.value === 3) cellStyle.addClass("miss-cell");
     }
 }
 
@@ -82,6 +82,18 @@ socket.on('boardsUpdate', ({ userBoard: uData, enemyBoard: eData, yourTurn }) =>
 document.getElementById('startBtn').addEventListener('click', () => {
     socket.emit('startGame');
     document.getElementById('startBtn').style.display = 'none';
+});
+
+document.getElementById('restartBtn').addEventListener('click', () => {
+    socket.emit('restartGame');
+});
+
+socket.on('gameRestarted', () => {
+    document.getElementById('startBtn').style.display = 'inline-block';
+    document.getElementById('startBtn').disabled = true;
+    const cellsLeftEl = document.getElementById('cellsLeft');
+    if (cellsLeftEl) cellsLeftEl.textContent = "20";
+    document.getElementById('turnInfo').textContent = "Розставте кораблі і натисніть Старт";
 });
 
 socket.on('gameOver', ({ winner }) => {

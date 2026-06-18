@@ -23,7 +23,26 @@
                 <small>*Палуби не можуть торкатися по діагоналі</small>
             </div>
             <p id="turnInfo">Розставте кораблі і натисніть Старт</p>
+            <!-- Кнопка неактивна поки не поставимо 20 клітинок -->
             <button id="startBtn" disabled>Старт</button>
+            <button id="restartBtn" style="padding: 10px 20px; cursor: pointer; margin-left: 10px;">Перезапустити</button>
+
+            <div class="rules" style="margin-top: 20px; text-align: left; font-size: 14px; display: inline-block;">
+                <strong>Правила гри:</strong>
+                <p style="margin: 5px 0;">Розставте 10 кораблів (разом 20 клітинок):</p>
+                <ul style="margin-top: 5px; padding-left: 20px; margin-bottom: 15px;">
+                    <li>1 шт. — 4-палубний</li>
+                    <li>2 шт. — 3-палубні</li>
+                    <li>3 шт. — 2-палубні</li>
+                    <li>4 шт. — 1-палубні</li>
+                </ul>
+                <strong>Кольори на дошці:</strong>
+                <ul style="margin-top: 5px; padding-left: 20px;">
+                    <li><span style="display:inline-block; width:12px; height:12px; background:gray; margin-right:5px;"></span>Сірий — ваш корабель</li>
+                    <li><span style="display:inline-block; width:12px; height:12px; background:red; margin-right:5px;"></span>Червоний — влучання</li>
+                    <li><span style="display:inline-block; width:12px; height:12px; background:lightgray; margin-right:5px;"></span>Світло-сірий — промах</li>
+                </ul>
+            </div>
         </div>
     </div>
 </body>
