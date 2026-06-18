@@ -2,7 +2,7 @@
 
 **Грати онлайн:** [https://sofia-battleship.up.railway.app](https://sofia-battleship.up.railway.app)
 
-![Інтерфейс гри](game.png)
+![Інтерфейс гри](image.png)
 
 ## Про гру
 Це веб-реалізація класичної гри "Морський бій" для двох гравців. Проєкт створено за допомогою Node.js, Express та Socket.io (для взаємодії в реальному часі). Ігрові поля відображаються за допомогою таблиць WebDataRocks.
