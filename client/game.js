@@ -1,4 +1,4 @@
-const socket = io('http://localhost:3000');
+const socket = io();
 
 function colorCell(cellStyle, cellData) {
     if (cellData.type === "value") {
