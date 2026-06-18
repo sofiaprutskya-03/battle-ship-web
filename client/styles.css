@@ -96,3 +96,13 @@ h1 { text-align: center; }
 .wdr-field-list-btn {
     display: none !important;
 }
+
+.blocked-board {
+    
+    pointer-events: none;
+    user-select: none;
+}
+
+#createRoomBtn:hover, #joinRoomBtn:hover {
+    background-color: #d0d0d0 !important;
+}
