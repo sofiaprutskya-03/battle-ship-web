@@ -106,6 +106,5 @@ socket.on('gameOver', ({ winner }) => {
 });
 
 socket.on('serverFull', (msg) => {
-    alert(msg);
-    document.body.innerHTML = `<h2 style='text-align:center; margin-top:50px; color:red;'>${msg}</h2><p style='text-align:center;'>Зачекайте, поки хтось вийде з гри.</p>`;
+    console.log(msg);
 });

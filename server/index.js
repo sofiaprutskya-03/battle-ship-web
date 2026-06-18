@@ -153,16 +153,29 @@ io.on('connection', (socket) => {
     });
 
     socket.on('restartGame', () => {
-        game.players[playerId].board = createBoard();
-        game.players[playerId].status = 'waiting';
+        game.players.p1.board = createBoard();
+        game.players.p2.board = createBoard();
+        game.players.p1.status = 'waiting';
+        game.players.p2.status = 'waiting';
         game.status = 'waiting';
+        game.toMove = 'p1';
         
-        socket.emit('boardInit', {
-            userBoard: flattenBoard(game.players[playerId].board),
-            enemyBoard: flattenEnemyBoard(game.players[enemyId].board),
-            cellsLeft: 20
-        });
-        socket.emit('gameRestarted');
+        io.emit('gameRestarted');
+        
+        if (game.players.p1.socket) {
+            game.players.p1.socket.emit('boardInit', {
+                userBoard: flattenBoard(game.players.p1.board),
+                enemyBoard: flattenEnemyBoard(game.players.p2.board),
+                cellsLeft: 20
+            });
+        }
+        if (game.players.p2.socket) {
+            game.players.p2.socket.emit('boardInit', {
+                userBoard: flattenBoard(game.players.p2.board),
+                enemyBoard: flattenEnemyBoard(game.players.p1.board),
+                cellsLeft: 20
+            });
+        }
     });
 
     socket.on('disconnect', () => {
