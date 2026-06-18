@@ -9,7 +9,7 @@ app.use(express.static(path.join(__dirname, '../client')));
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: '*'        // CORS — правило безпеки браузера яке забороняє звертатись до сервера з іншої адреси
+        origin: ['https://sofia-battleship.up.railway.app', 'http://localhost:3000']
     }
 });
 
